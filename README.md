@@ -1,1 +1,5 @@
-Sends classifications in real time to show crowdsourcing concensus. 
+```
+npm install
+npm start
+open http://localhost:5050
+```
