@@ -16,19 +16,13 @@ body {
 	cursor: crosshair;
 
 	#tracercanvas {
-		position: absolute;
 		width: 800px;
 		height: 600px;
-		z-index: 10;
 		background: $canvascolor;
 	}
+}
 
-	#button {
-		@include button-style($buttoncolor);
-		border: none;
-		position: absolute;
-		z-index: 10;
-		top: 10px;
-		left: 10px;
-	}
+#button {
+	@include button-style($buttoncolor);
+	border: none;
 }

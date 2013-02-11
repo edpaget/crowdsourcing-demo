@@ -9,14 +9,18 @@ class Tracer
 	oldPt: null
 	oldMidPt: null
 
+	# array of points to send on button press
+	currentTrace: []
+	traces: []
+
 	# colors could be random
-	colors: ["#828b20", "#b0ac31", "#cbc53d", "#fad779", "#f9e4ad", "#faf2db", "#563512", "#9b4a0b", "#d36600", "#fe8a00", "#f9a71f"]
+	colors: ["#820020", "#b00001", "#cb003d", "#fa0070", "#f900ad", "#fa00d0", "#560002", "#9b000b", "#d30000", "#fe0000", "#f9001f"]
 	currentColor: null
 	index: 0
 
 	STROKEWIDTH: 5
 
-	constructor: () ->
+	constructor: (moonzoourl) ->
 		console.log "hi"
 		@canvas = document.getElementById("tracercanvas")
 		@stage = new createjs.Stage(@canvas)
@@ -26,23 +30,43 @@ class Tracer
 
 		createjs.Touch.enable(@stage)
 
-		@addInteractionListeners()
+		@addInteraction()
 		# TODO: replace this with a smarter load
-		@loadImage("http://moonzoo.s3.amazonaws.com/v21/slices/000019052.jpg")
+		@loadImage(moonzoourl)
 
-	addInteractionListeners: () =>
+	addCurrentPointToTrace: () =>
+		# add the current point to the trace
+		@currentTrace.push(
+				x: @stage.mouseX
+				y: @stage.mouseY
+				time: createjs.Ticker.getTime()
+		)
+
+	addInteraction: () =>
+		$("#button").on("click", @sendTraces)
+		createjs.Ticker.addListener(@)
 		@stage.addEventListener("stagemousedown", @handleMouseDown)
 		@stage.addEventListener("stagemouseup", @handleMouseUp)
 
+	sendTraces: ()=>
+		console.log "send: ", @traces
+		return false
+
 	handleMouseDown: (event) =>
-		console.log "down"
+		# console.log "down"
+		# create the new trace
+		@currentTrace = []
+
 		@currentColor = @colors[ (@index++) % @colors.length ]
 		@oldPt = new createjs.Point(@stage.mouseX, @stage.mouseY)
 		@oldMidPt = @oldPt
+
+		@addCurrentPointToTrace()
+
 		@stage.addEventListener("stagemousemove" , @handleMouseMove)
 
 	handleMouseMove: (event) =>
-		console.log "move"
+		# console.log "move"
 		@midPt = new createjs.Point(@oldPt.x + @stage.mouseX>>1, @oldPt.y + @stage.mouseY>>1)
 
 		@drawingCanvas.graphics #.clear()
@@ -62,15 +86,17 @@ class Tracer
 		@oldMidPt.x = @midPt.x
 		@oldMidPt.y = @midPt.y
 
+		@addCurrentPointToTrace()
+
 		@stage.update()
 
 	handleMouseUp: (event) =>
-		console.log "up"
+		@traces.push(@currentTrace) if (@currentTrace != @traces[@traces.length-1])
 		@stage.removeEventListener("stagemousemove" , @handleMouseMove);
 
 	loadImage: (url) =>
 		console.log "loading: ", url
-		@img = new Image() #document.getElementById("moonimage")
+		@img = new Image()
 		@img.onload = @handleImageLoad
 		@img.src = url
 		# background = new createjs.Bitmap(url)
@@ -87,7 +113,6 @@ class Tracer
 		@drawingCanvas = new createjs.Shape()
 		@stage.addChild(@drawingCanvas)
 		
-		createjs.Ticker.addListener(window)
 		@update = true
 
 	tick: () =>
@@ -97,4 +122,4 @@ class Tracer
 			@stage.update()
 
 $ ->
-	zooTracer = new Tracer
+	zooTracer = new Tracer("http://moonzoo.s3.amazonaws.com/moonzoov2/slices/000005215.png")
