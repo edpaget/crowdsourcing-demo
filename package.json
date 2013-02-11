@@ -17,7 +17,8 @@
     "socket.io" : "*",
     "coffee-script" : "*",
     "redis" : "*",
-    "express" : "*"
+    "express" : "*",
+    "underscore" : "*"
   },
   "devDependencies" : {
     "mocha" : "*",
