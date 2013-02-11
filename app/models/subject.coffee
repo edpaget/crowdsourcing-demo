@@ -19,4 +19,3 @@ class Subject extends BaseModel
     @constructor.instances.push @
 
 module.exports = Subject
-window.Subject = Subject

@@ -14,7 +14,7 @@ class Classify extends Controller
   constructor: ->
     super
 
-    @html template @
+    @html template
 
     Subject.on 'select', @onSubjectSelect
 
