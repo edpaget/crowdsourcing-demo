@@ -1,5 +1,8 @@
 require './vendor/jquery'
 
+window.createjs ?= {}
+require './vendor/easeljs.js'
+
 Subject = require './models/subject'
 {Stack} = require 'spine/lib/manager'
 Route = require 'spine/lib/route'
