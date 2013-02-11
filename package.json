@@ -1,0 +1,27 @@
+{
+  "name": "real-crowd",
+  "version": "0.0.0",
+  "description": "Sends classifications in real time to show crowdsourcing concensus.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edpaget/crowdsourcing-demo.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies" : {
+    "socket.io" : "*",
+    "redis" : "*",
+    "express" : "*"
+  },
+  "devDependencies" : {
+    "mocha" : "*",
+    "chai" : "*",
+    "sinon" : "*",
+    "sinon-chai" : "*"
+  }
+}
