@@ -11,6 +11,14 @@ html
     &.active
       display: block
 
+button
+  background: transparent
+  border: 0
+  color: inherit
+  cursor: pointer
+  font: inherit
+  padding: 0
+
 a
   color: inherit
 
@@ -25,10 +33,14 @@ nav
     margin: 20px 0
     text-decoration: none
 
+    &.results
+      font-size: 24px
+
 .classify,
 .results
   font-size: 50px
   margin-top: 40px
+  text-align: center
 
   .action
     bottom: 15px
@@ -36,10 +48,9 @@ nav
     right: 15px
 
     button
-      background: transparent
-      border: 0
-      color: inherit
       display: block
-      font: inherit
-      padding: 0
       margin: 20px 0
+      width: 100%
+
+      &[name="next"]
+        font-size: 24px
