@@ -20,6 +20,11 @@ db = redisClient.create()
 distancePoints = (left, right) ->
   Math.sqrt(Math.pow(left.x - right.x, 2), Math.pow(left.y - right.y, 2))
 
+averageCricles = (data) ->
+  averages = new Array
+  averages.push(averageCircle circle) for circle in data
+  averages
+
 averageCircle = (data) ->
   data = _.flatten data
   xMean = _(data).chain().pluck('x').reduce(((memo, num) -> memo + num), 0) / 2
@@ -41,14 +46,14 @@ io.sockets.on 'connection', (socket) ->
 
     socket.emit 'old-classifications', 
       classifications: classifications
-      averages: averageCircle classificiations 
+      averages: averageCircles classificiations 
     subscription = db.subscribe "classification-#{data.id}"
     subscription.on 'error', (err) ->
       console.error err
     subscription.on 'messsage', (channel, data) ->
       socket.emit 'new-classification', 
         classifications: data
-        averages: averageCircle(classifications.push data)
+        averages: averageCircles(classifications.push data)
 
     socket.on 'unsubscribe', (data) ->
       subscription.off 'message'
