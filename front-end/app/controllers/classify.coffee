@@ -1,3 +1,4 @@
+Tracer = require './tracer'
 {Controller} = require 'spine'
 template = require '../views/classify'
 Subject = require '../models/subject'
@@ -13,6 +14,8 @@ class Classify extends Controller
   elements:
     'img': 'image'
 
+  tracer: null
+
   constructor: ->
     super
 
@@ -20,9 +23,12 @@ class Classify extends Controller
 
     Subject.on 'select', @onSubjectSelect
 
+  activate: ->
+    super
+    @tracer = new Tracer()
+  
   onSubjectSelect: (e, subject) =>
     @classification = new Classification {subject}
-    @image.attr src: subject.location
 
   onClickSubmit: (e) ->
     @classification.send()

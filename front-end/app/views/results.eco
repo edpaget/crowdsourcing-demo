@@ -1,1 +1,4 @@
-<img />
+<div id="player">
+	<canvas id="playercanvas" width="840" height="560"></canvas>
+</div>
+

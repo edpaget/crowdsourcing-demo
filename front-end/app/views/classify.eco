@@ -1,4 +1,6 @@
-<img />
+<div id="tracer">
+	<canvas id="tracercanvas" width="840" height="560"></canvas>
+</div>
 
 <div class="action">
   <button name="classify"><i class="icon-ok-circle" title="Classify"></i></button>
