@@ -21,8 +21,8 @@ distancePoints = (left, right) ->
   Math.sqrt(Math.pow(left.x - right.x, 2), Math.pow(left.y - right.y, 2))
 
 centerPoint = (points) ->
-  xSum = _(points).chain().pluck('x').reduce(((memo, num) memo + num), 0).value()
-  ySum = _(points).chain().pluck('y').reduce(((memo, num) memo + num), 0).value()
+  xSum = _(points).chain().pluck('x').reduce(((memo, num) -> memo + num), 0).value()
+  ySum = _(points).chain().pluck('y').reduce(((memo, num) -> memo + num), 0).value()
 
   xMean = xSum / points.length
   yMean = ySum / points.length
@@ -39,8 +39,8 @@ io.sockets.on 'connection', (socket) ->
     for centerPoint, index in centerPoints
       closestKey = _(keys).filter((key) ->
         ((key[1] - 10 < centerPoint.x) and (key[1] + 10 > centerPoint.x) and
-         (key[2] - 10 < centerPoint.y) and (key[2] + 10 > centerPoint.y))
-      if _.isUndefined closestKey ->
+         (key[2] - 10 < centerPoint.y) and (key[2] + 10 > centerPoint.y)))
+      if _.isEmpty closestKey
         db.lpush "#{data.id}-#{centerPoint.x}-#{centerPoint.y}", data[index]
         db.lpush data.id, "#{data.id}-#{centerPoint.x}-#{centerPoint.y}"
       else
