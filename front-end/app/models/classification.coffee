@@ -18,7 +18,7 @@ class Classification
     @marks = []
 
   toJSON: ->
-    {id: @subject.id, marks: [[{x: 0, y: 0}]]} # TODO!
+    {id: @subject.id, marks: @marks}
 
   send: ->
     socket.emit 'classify', @toJSON()
