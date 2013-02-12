@@ -1,4 +1,4 @@
-redisClient = require './lib/redis'
+redisClient = require './lib/redis_client'
 _ = require 'underscore'
 
 handler = (req, res) ->
@@ -12,6 +12,8 @@ require('./lib/socket')(io)
 
 port = process.env.PORT || 3001
 server.listen port
+
+console.log "Server listening on port: #{port}"
 
 db = redisClient.create()
 

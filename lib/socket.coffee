@@ -1,4 +1,4 @@
-redisCli = require './lib/redis'
+redisCli = require './redis_client'
 RedisStore = require 'socket.io/lib/stores/redis'
 
 module.exports = (io) ->
