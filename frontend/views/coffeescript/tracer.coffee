@@ -11,6 +11,7 @@ class Tracer
 
 	# array of points to send on button press
 	currentTrace: []
+	currentTime: 0
 	traces: []
 
 	# colors could be random
@@ -39,7 +40,7 @@ class Tracer
 		@currentTrace.push(
 				x: @stage.mouseX
 				y: @stage.mouseY
-				time: createjs.Ticker.getTime()
+				time: createjs.Ticker.getTime()-@currentTime
 		)
 
 	addInteraction: () =>
@@ -61,6 +62,7 @@ class Tracer
 		@oldPt = new createjs.Point(@stage.mouseX, @stage.mouseY)
 		@oldMidPt = @oldPt
 
+		@currentTime = createjs.Ticker.getTime()
 		@addCurrentPointToTrace()
 
 		@stage.addEventListener("stagemousemove" , @handleMouseMove)
