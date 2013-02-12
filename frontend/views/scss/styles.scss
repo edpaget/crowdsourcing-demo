@@ -1,0 +1,28 @@
+@import "css3-mixins";
+@import "button-mixins";
+
+$mainfont: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$buttoncolor: #f00;
+$black: #000;
+$canvascolor: #111;
+
+body {
+	font-family: $mainfont;
+	background: $black;
+}
+
+#tracer {
+	position: relative;
+	cursor: crosshair;
+
+	#tracercanvas {
+		width: 800px;
+		height: 600px;
+		background: $canvascolor;
+	}
+}
+
+.button {
+	@include button-style($buttoncolor);
+	border: none;
+}
