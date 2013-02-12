@@ -8,6 +8,8 @@ class Tracer
 	drawingCanvas: null
 	oldPt: null
 
+	isInited: false
+
 	# array of points to send on button press
 	currentTrace: []
 	currentTime: 0
@@ -22,17 +24,19 @@ class Tracer
 	IMAGESCALE: 1.4
 
 	constructor: () ->
-		@canvas = document.getElementById("tracercanvas")
-		@stage = new createjs.Stage(@canvas)
+		if !@isInited
+			@isInited = true
+			@canvas = document.getElementById("tracercanvas")
+			@stage = new createjs.Stage(@canvas)
 
-		@stage.autoClear = false
-		@stage.enableDOMEvents(true)
+			@stage.autoClear = false
+			@stage.enableDOMEvents(true)
 
-		createjs.Touch.enable(@stage)
+			createjs.Touch.enable(@stage)
 
-		@addInteraction()
-		# TODO: replace this with a smarter load
-		@loadImage("http://moonzoo.s3.amazonaws.com/moonzoov2/slices/000005215.png")
+			@addInteraction()
+			# TODO: replace this with a smarter load
+			@loadImage("http://moonzoo.s3.amazonaws.com/moonzoov2/slices/000005215.png")
 
 	addCurrentPointToTrace: () =>
 		# add the current point to the trace
@@ -59,7 +63,6 @@ class Tracer
 
 		@currentColor = @colors[ (@index++) % @colors.length ]
 		@oldPt = new createjs.Point(@stage.mouseX, @stage.mouseY)
-		@oldMidPt = @oldPt
 
 		@currentTime = createjs.Ticker.getTime()
 		@addCurrentPointToTrace()
@@ -86,7 +89,9 @@ class Tracer
 		@update = true
 
 	handleMouseUp: (event) =>
-		@traces.push(@currentTrace) if (@currentTrace != @traces[@traces.length-1])
+		# console.log "up"
+		@traces.push(@currentTrace) if (@currentTrace.length > 0)
+		@currentTrace = []
 		@stage.removeEventListener("stagemousemove" , @handleMouseMove);
 
 	loadImage: (url) =>
