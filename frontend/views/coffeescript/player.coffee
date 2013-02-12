@@ -14,11 +14,12 @@ class Player
 	currentTime: 0
 	currentPoint: 0
 	traces: []
+	averages: []
 	isDrawing: false
 	lastDraw: 0
 
 	# colors could be random
-	averageColor: "#820020"
+	averageColor: "#ff0000"
 	traceColor: "rgba(255,255,0,.5)"
 	index: 0
 
@@ -63,46 +64,28 @@ class Player
 			)
 
 		@update = true
+
+	drawAverages: () =>
+		for average in @averages
+			@drawingCanvas.graphics #.clear()
+				.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
+				.beginStroke(@averageColor)
+				.moveTo(average[0].x, average[0].y)
+				.curveTo(
+					average[1].x
+					average[1].y
+					average[2].x
+					average[2].y
+				)
+				.curveTo(
+					average[3].x
+					average[3].y
+					average[0].x
+					average[0].y
+				)
+
+		@update = true
 		
-
-	handleMouseDown: (event) =>
-		# console.log "down"
-		# create the new trace
-		@currentTrace = []
-
-		@currentColor = @colors[ (@index++) % @colors.length ]
-		@oldPt = new createjs.Point(@stage.mouseX, @stage.mouseY)
-		@oldMidPt = @oldPt
-
-		@currentTime = createjs.Ticker.getTime()
-		@addCurrentPointToTrace()
-
-		@stage.addEventListener("stagemousemove" , @handleMouseMove)
-
-	handleMouseMove: (event) =>
-		# console.log "move"
-		@midPt = new createjs.Point(@oldPt.x + @stage.mouseX>>1, @oldPt.y + @stage.mouseY>>1)
-
-		@drawingCanvas.graphics #.clear()
-			.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
-			.beginStroke(@currentColor)
-			.moveTo(@midPt.x, @midPt.y)
-			.curveTo(
-				@oldPt.x
-				@oldPt.y
-				@oldMidPt.x
-				@oldMidPt.y
-			)
-
-		@oldPt.x = @stage.mouseX
-		@oldPt.y = @stage.mouseY
-
-		@oldMidPt.x = @midPt.x
-		@oldMidPt.y = @midPt.y
-
-		@addCurrentPointToTrace()
-
-		@stage.update()
 
 	loadImage: (url) =>
 		console.log "loading: ", url
@@ -116,8 +99,9 @@ class Player
 	loadTraces: (url) =>
 		$.getJSON(url,
 			(data) =>
-				@traces = data
-				console.log "traces: ", @traces
+				@traces = data.classifications
+				@averages = data.averages
+				# console.log "traces: ", data, @traces
 				@startDrawingTraces()
 			)
 
@@ -144,7 +128,9 @@ class Player
 			if (@currentPoint >= @traces[@currentTrace].length)
 				@currentPoint = 1
 				@currentTrace++
-				@isDrawing = false if @currentTrace >= @traces.length
+				if @currentTrace >= @traces.length
+					@isDrawing = false
+					@drawAverages()
 
 $ ->
 	zooPlayer = new Player()
