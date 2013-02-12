@@ -31,20 +31,21 @@ centerPoint = (points) ->
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'classify', (data) ->
+    console.log {data}
     centerPoints = new Array
     keys = new Array
 
-    centerPoints.push centerPoint(points) for points in data
+    centerPoints.push centerPoint(points) for points in data.marks
     keys.push key.split("-") for key in db.keys("#{data.id}-*")
     for centerPoint, index in centerPoints
       closestKey = _(keys).filter((key) ->
         ((key[1] - 10 < centerPoint.x) and (key[1] + 10 > centerPoint.x) and
          (key[2] - 10 < centerPoint.y) and (key[2] + 10 > centerPoint.y)))
       if _.isEmpty closestKey
-        db.lpush "#{data.id}-#{centerPoint.x}-#{centerPoint.y}", data[index]
+        db.lpush "#{data.id}-#{centerPoint.x}-#{centerPoint.y}", data.marks[index]
         db.lpush data.id, "#{data.id}-#{centerPoint.x}-#{centerPoint.y}"
       else
-        db.lpush "#{data.id}-#{closestKey[1]}-#{closestKey[2]}", data[index]
+        db.lpush "#{data.id}-#{closestKey[1]}-#{closestKey[2]}", data.marks[index]
         db.ltrim 0, 99
     db.publish "classification-#{data.id}", db.get(data.id)
 
