@@ -1,3 +1,6 @@
 <img />
-<button name="classify">Classify</button>
-<button name="next">Next</button>
+
+<div class="action">
+  <button name="classify"><i class="icon-ok-circle" title="Classify"></i></button>
+  <button name="next"><i class="icon-arrow-right" title="Next"></i></button>
+</div>

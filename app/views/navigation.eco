@@ -1,3 +1,3 @@
-<a href="#/classify">Classify</a>
-<a href="#/results">Results</a>
+<a href="#/classify"><i class="icon-hand-up" title="Classify"></i></a>
+<a href="#/results"><i class="icon-group" title="Group results"></i></a>
 <select name="subject"></select>

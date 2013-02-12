@@ -4,6 +4,8 @@ socket = require '../lib/socket'
 Subject = require '../models/subject'
 
 class Results extends Controller
+  className: 'results'
+
   elements:
     'img': 'image'
 

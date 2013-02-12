@@ -4,6 +4,8 @@ Subject = require '../models/subject'
 Classification = require '../models/classification'
 
 class Classify extends Controller
+  className: 'classify'
+
   events:
     'click button[name="classify"]': 'onClickSubmit'
     'click button[name="next"]': 'onClickNext'

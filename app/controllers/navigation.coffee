@@ -4,7 +4,7 @@ Subject = require '../models/subject'
 Classification = require '../models/classification'
 
 class Classify extends Controller
-  tagName: 'nav'
+  tag: 'nav'
 
   events:
     'change select[name="subject"]': 'onChooseSubject'
