@@ -71,19 +71,16 @@ io.sockets.on 'connection', (socket) ->
           multi.exec publish
 
   socket.on 'subscribe', (data) ->
-    classifications = new Array
-    classificationKeys = db.get data.id
-    classifications.push db.get(key) for key in classificationKeys
+    db.get data.id, (err, keys) ->
+      console.error err if err
+      db.mget keys, (err, classfics) ->
+        socket.emit 'old-classifications', classifics
 
-    socket.emit 'old-classifications', classifications
-
-    subscription = db.subscribe "classification-#{data.id}"
-    subscription.on 'error', (err) ->
-      console.error err
-    subscription.on 'messsage', (channel, data) ->
-      newClassifications = new Array
-      newClassifications.push db.get(key)[0] for key in data
+    db.on 'messsage', (channel, data) ->
+      db.mget 'data', (err, replies) ->
+        console.error err if err
       socket.emit 'new-classification', _.difference(classifications, allClassifications)
+      db.subscribe "classification-#{data.id}"
 
     socket.on 'unsubscribe', (data) ->
-      subscription.off 'message'
+      db.unsubscribe()
