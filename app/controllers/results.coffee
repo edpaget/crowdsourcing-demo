@@ -12,14 +12,16 @@ class Results extends Controller
 
     @html template
 
+    Subject.on 'select', @onSubjectSelect
     socket.on 'old-classifications', @onOldClassifications
     socket.on 'new-classification', @onNewClassification
 
   activate: ->
     super
-
-    @image.attr src: Subject.first().location
     socket.emit 'subscribe', id: Subject.first().id
+
+  onSubjectSelect: (e, subject) =>
+    @image.attr src: subject.location
 
   onOldClassifications: (data) ->
     # TODO: Draw the initial classifications
@@ -29,7 +31,6 @@ class Results extends Controller
 
   deactivate: ->
     super
-
     socket.emit 'unsubscribe', id: Subject.first().id
 
 module.exports = Results

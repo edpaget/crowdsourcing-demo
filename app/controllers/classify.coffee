@@ -18,8 +18,6 @@ class Classify extends Controller
 
     Subject.on 'select', @onSubjectSelect
 
-    Subject.next()
-
   onSubjectSelect: (e, subject) =>
     @classification = new Classification {subject}
     @image.attr src: subject.location

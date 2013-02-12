@@ -16,7 +16,7 @@ class BaseModel
     @jQueryEventTarget ?= $({})
     @jQueryEventTarget.on arguments...
 
-  trigger: (eventName, args) ->
+  trigger: (eventName, args = []) ->
     @jQueryEventTarget ?= $({})
     @jQueryEventTarget.trigger arguments...
     @constructor.trigger eventName, [@, args...]
