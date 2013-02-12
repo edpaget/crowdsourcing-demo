@@ -12,7 +12,7 @@ module.exports =
       client.auth rtg.auth.split(':')[1], (err) ->
         if err
           console.error err
-          throw errA
+          throw err
 
     client.on 'error', (args...) ->
       console.error 'Danger Will Robinson! ', args
