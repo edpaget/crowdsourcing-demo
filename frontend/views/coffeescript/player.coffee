@@ -110,6 +110,8 @@ class Player
 		# hacky image display (XSS issues)
 		# $("#moonimage").css("display","block")
 		@backgroundImage = new createjs.Bitmap(@img)
+		@backgroundImage.scaleX = @backgroundImage.scaleY = 1.5
+		
 		@stage.addChild(@backgroundImage)
 		
 		@drawingCanvas = new createjs.Shape()
