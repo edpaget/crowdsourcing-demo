@@ -30,3 +30,7 @@ end
 get '/' do
 	File.open('public/index.html', File::RDONLY)
 end
+
+get '/playback' do
+	File.open('public/playback.html', File::RDONLY)
+end
