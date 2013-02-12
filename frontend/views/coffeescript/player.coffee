@@ -1,4 +1,4 @@
-class Tracer
+class Player
 
 	canvas: null
 	stage: null
@@ -7,15 +7,19 @@ class Tracer
 	update: true
 	drawingCanvas: null
 	oldPt: null
+	oldMidPt: null
 
 	# array of points to send on button press
 	currentTrace: []
 	currentTime: 0
+	currentPoint: 0
 	traces: []
+	isDrawing: false
+	lastDraw: 0
 
 	# colors could be random
-	colors: ["#820020", "#b00001", "#cb003d", "#fa0070", "#f900ad", "#fa00d0", "#560002", "#9b000b", "#d30000", "#fe0000", "#f9001f"]
-	currentColor: null
+	averageColor: "#820020"
+	traceColor: "rgba(255,255,0,.5)"
 	index: 0
 
 	STROKEWIDTH: 5
@@ -27,29 +31,39 @@ class Tracer
 		@stage.autoClear = false
 		@stage.enableDOMEvents(true)
 
-		createjs.Touch.enable(@stage)
+		createjs.Ticker.setFPS(60);
 
 		@addInteraction()
 		# TODO: replace this with a smarter load
 		@loadImage("http://moonzoo.s3.amazonaws.com/moonzoov2/slices/000005215.png")
-
-	addCurrentPointToTrace: () =>
-		# add the current point to the trace
-		@currentTrace.push(
-				x: @stage.mouseX
-				y: @stage.mouseY
-				time: createjs.Ticker.getTime()-@currentTime
-		)
+		@loadTraces("/js/test.json")
 
 	addInteraction: () =>
-		$("#submitButton").on("click", @sendTraces)
 		createjs.Ticker.addListener(@)
-		@stage.addEventListener("stagemousedown", @handleMouseDown)
-		@stage.addEventListener("stagemouseup", @handleMouseUp)
 
-	sendTraces: ()=>
-		console.log "send: ", JSON.stringify(@traces)
-		return false
+	startDrawingTraces: () =>
+		@currentTrace = 0
+		@currentTime = createjs.Ticker.getTime()
+		@currentPoint = 1
+		@isDrawing = true
+		@lastDraw = 0
+
+	drawTrace: () =>
+		trace = @traces[@currentTrace]
+		point = trace[@currentPoint]
+		prevpoint = trace[@currentPoint-1]
+
+		@drawingCanvas.graphics #.clear()
+			.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
+			.beginStroke(@traceColor)
+			.moveTo(prevpoint.x, prevpoint.y)
+			.lineTo(
+				point.x
+				point.y
+			)
+
+		@update = true
+		
 
 	handleMouseDown: (event) =>
 		# console.log "down"
@@ -67,26 +81,28 @@ class Tracer
 
 	handleMouseMove: (event) =>
 		# console.log "move"
+		@midPt = new createjs.Point(@oldPt.x + @stage.mouseX>>1, @oldPt.y + @stage.mouseY>>1)
 
 		@drawingCanvas.graphics #.clear()
 			.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
 			.beginStroke(@currentColor)
-			.moveTo(@oldPt.x, @oldPt.y)
-			.lineTo(
-				@stage.mouseX
-				@stage.mouseY
+			.moveTo(@midPt.x, @midPt.y)
+			.curveTo(
+				@oldPt.x
+				@oldPt.y
+				@oldMidPt.x
+				@oldMidPt.y
 			)
 
 		@oldPt.x = @stage.mouseX
 		@oldPt.y = @stage.mouseY
 
+		@oldMidPt.x = @midPt.x
+		@oldMidPt.y = @midPt.y
+
 		@addCurrentPointToTrace()
 
-		@update = true
-
-	handleMouseUp: (event) =>
-		@traces.push(@currentTrace) if (@currentTrace != @traces[@traces.length-1])
-		@stage.removeEventListener("stagemousemove" , @handleMouseMove);
+		@stage.update()
 
 	loadImage: (url) =>
 		console.log "loading: ", url
@@ -96,6 +112,14 @@ class Tracer
 		# background = new createjs.Bitmap(url)
 		# @stage.addChild(background)
 		@update = true
+
+	loadTraces: (url) =>
+		$.getJSON(url,
+			(data) =>
+				@traces = data
+				console.log "traces: ", @traces
+				@startDrawingTraces()
+			)
 
 	handleImageLoad: () =>
 		console.log " imw:" + @img.width + " imgh:" + @img.height
@@ -114,6 +138,13 @@ class Tracer
 		if (@update)
 			@update = false
 			@stage.update()
+		if (@isDrawing && @drawingCanvas)
+			@drawTrace()
+			@currentPoint++
+			if (@currentPoint >= @traces[@currentTrace].length)
+				@currentPoint = 1
+				@currentTrace++
+				@isDrawing = false if @currentTrace >= @traces.length
 
 $ ->
-	zooTracer = new Tracer()
+	zooPlayer = new Player()

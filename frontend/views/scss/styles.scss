@@ -22,7 +22,7 @@ body {
 	}
 }
 
-#button {
+.button {
 	@include button-style($buttoncolor);
 	border: none;
 }
