@@ -53,10 +53,8 @@ class Tracer
 		@stage.addEventListener("stagemouseup", @handleMouseUp)
 
 	cleanTraces: () =>
-		console.log "cleanTraces"
+		# console.log "cleanTraces"
 		@traces = []
-		@currentTrace = []
-		@currentTime = 0
 		@drawingCanvas.graphics.clear()
 		@update = true
 
