@@ -4,7 +4,7 @@ module.exports =
     env = process.env.NODE_ENV or 'development'
     db = db or 1
 
-    if env is 'development'
+    if env is 'development' or env is 'staging'
       client = redis.createClient 6379, 'localhost'
     else
       rtg = require('url').parse process.env.REDISTOGO_URL

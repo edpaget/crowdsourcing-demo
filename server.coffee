@@ -1,19 +1,25 @@
+nstatic = require 'node-static'
 env = process.env.NODE_ENV || 'development'
 
 redisClient = require './lib/redis_client'
 _ = require 'underscore'
 
+files = new(nstatic.Server)('./build')
+
 handler = (req, res) ->
-  res.write 200
-  res.send()
+  if env is 'production' or env is 'staging'
+    req.addListener 'end', ->
+      files.serve(req, res)
+  else
+    res.write 200
+    res.send()
 
 server = require('http').createServer handler
 io = require('socket.io').listen server, {log: false}
 
 require('./lib/socket')(io)
 
-
-port = process.env.SERVER_PORT || 3001
+port = process.env.PORT || 3001
 server.listen port
 
 console.log "Server listening on port: #{port}"

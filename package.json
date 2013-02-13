@@ -17,7 +17,8 @@
     "haw": "~0.0.2",
     "hem": "~0.2.7",
     "socket.io-client": "~0.9.11",
-    "spine": "~1.0.8"
+    "spine": "~1.0.8",
+    "node-static" : "*"
   },
   "devDependencies" : {
     "mocha" : "*",
