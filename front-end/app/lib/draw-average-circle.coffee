@@ -33,14 +33,6 @@ drawBlob = ([n, e, s, w], canvas) ->
   hOffset = (e.x - w.x) * 0.05
   vOffset = (s.y - n.y) * 0.05
 
-  pathData = """
-    M #{n.x} #{n.y}
-    Q #{e.x - hOffset} #{n.y + vOffset} #{e.x} #{e.y}
-    Q #{e.x - hOffset} #{s.y - vOffset} #{s.x} #{s.y}
-    Q #{w.x + hOffset} #{s.y - vOffset} #{w.x} #{w.y}
-    Q #{w.x + hOffset} #{n.y + vOffset} #{n.x} #{n.y}
-  """
-
   graphics = canvas.graphics
   graphics.setStrokeStyle 2, 'round', 'round'
   graphics.beginStroke 'red'
