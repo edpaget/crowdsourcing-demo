@@ -58,8 +58,9 @@ io.sockets.on 'connection', (socket) ->
       keys.push key.split("-") for key in replies
       for centerPt, index in centerPoints
         closestKey = _(keys).filter((key) ->
-          ((key[1] - 20 < centerPt.x) and (key[1] + 20 > centerPt.x) and
-           (key[2] - 20 < centerPt.y) and (key[2] + 20 > centerPt.y)))
+          console.log parseFloat(key[1]) - 30, centerPt.x, parseFloat(key[1]) + 30
+          ((parseFloat(key[1]) - 30 < centerPt.x) and (parseFloat(key[1]) + 30 > centerPt.x) and
+           (parseFloat(key[2])- 30 < centerPt.y) and (parseFloat(key[2]) + 30 > centerPt.y)))
         multi = db.multi()
         if _.isEmpty closestKey
           marks = {center: [centerPt.x, centerPt.y], marks: data.marks[index]}
