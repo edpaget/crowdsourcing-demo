@@ -1,5 +1,5 @@
 _ = require 'underscore'
-bestFit = require '../lib/best_fit'
+drawAverageCircle = require '../lib/draw-average-circle'
 
 class Player
 
@@ -76,16 +76,8 @@ class Player
 
   drawAverages: () =>
     for key, cluster of @clusters
-      lastPoint = cluster[0][cluster[0].length - 1]
-      flatCluster = _.flatten(cluster)
-      flatCluster.push lastPoint
-      curve = bestFit(flatCluster, .25)
-
-      @drawingCanvas.graphics
-        .setStrokeStyle(@STROKEWIDTH, 'round', 'round')
-        .beginStroke(@averageColor)
-        .moveTo(curve[0].x, curve[1].y)
-        .bezierCurveTo(curve[1].x, curve[1].y, curve[2].x, curve[2].y, curve[3].x, curve[3].y)
+    	console.log cluster
+    	drawAverageCircle cluster, @drawingCanvas
 
   loadImage: (url) =>
     console.log "loading: ", url
