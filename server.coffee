@@ -5,7 +5,7 @@ _ = require 'underscore'
 
 handler = (req, res) ->
   res.write 200
-  rese.send()
+  res.send()
 
 server = require('http').createServer handler
 io = require('socket.io').listen server, {log: false}
@@ -19,6 +19,7 @@ server.listen port
 console.log "Server listening on port: #{port}"
 
 db = redisClient.create()
+pub = redisClient.create()
 
 if env is 'development'
   monit = redisClient.create()
@@ -38,17 +39,8 @@ centerPoint = (points) ->
 
   {x: xMean, y: yMean}
 
-
 io.sockets.on 'connection', (socket) ->
   socket.on 'classify', (data) ->
-    publish = (err, replies) ->
-      console.error err if err
-      db.smembers data.id, (err, replies) ->
-        console.error err if err
-        console.log "Replies: ", replies, "\n"
-        db.publish "classification-#{data.id}", replies
-
-    console.log data.marks
     centerPoints = new Array
     keys = new Array
 
@@ -58,29 +50,39 @@ io.sockets.on 'connection', (socket) ->
       keys.push key.split("-") for key in replies
       for centerPt, index in centerPoints
         closestKey = _(keys).filter((key) ->
-          ((key[1] - 10 < centerPt.x) and (key[1] + 10 > centerPt.x) and
-           (key[2] - 10 < centerPt.y) and (key[2] + 10 > centerPt.y)))
+          ((key[1] - 20 < centerPt.x) and (key[1] + 20 > centerPt.x) and
+           (key[2] - 20 < centerPt.y) and (key[2] + 20 > centerPt.y)))
         multi = db.multi()
         if _.isEmpty closestKey
-          multi.lpush "#{data.id}-#{centerPt.x}-#{centerPt.y}", data.marks[index]
+          marks = {center: [centerPt.x, centerPt.y], marks: data.marks[index]}
+          multi.lpush "#{data.id}-#{centerPt.x}-#{centerPt.y}", JSON.stringify(marks)
           multi.sadd data.id, "#{data.id}-#{centerPt.x}-#{centerPt.y}"
-          multi.exec publish
         else
-          multi.lpush "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", data.marks[index]
+          marks = {center: [closestKey[0][1], closestKey[0][2]], marks: data.marks[index]}
+          multi.lpush "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", JSON.stringify(marks)
           multi.ltrim "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", 0, 99
-          multi.exec publish
+
+        multi.exec (err, replies) ->
+          console.error err, replies if err
+
+        pub.publish "classification-#{data.id}", JSON.stringify(marks)
+
 
   socket.on 'subscribe', (data) ->
-    db.get data.id, (err, keys) ->
+    sub = redisClient.create()
+    db.smembers data.id, (err, keys) ->
       console.error err if err
-      db.mget keys, (err, classfics) ->
-        socket.emit 'old-classifications', classifics
+      for key in keys
+        db.lrange key, 0, 99, (err, classifics) ->
+          console.error err if err
+          console.log classifics
+          socket.emit 'old-classifications', JSON.parse(classifics)
+      socket.emit 'loaded-all-classifications', 'done'
 
-    db.on 'messsage', (channel, data) ->
-      db.mget 'data', (err, replies) ->
-        console.error err if err
-      socket.emit 'new-classification', _.difference(classifications, allClassifications)
-      db.subscribe "classification-#{data.id}"
+    sub.on 'messsage', (channel, data) ->
+      socket.emit 'new-classification', JSON.parse(data)
+
+    sub.subscribe "classification-#{data.id}"
 
     socket.on 'unsubscribe', (data) ->
-      db.unsubscribe()
+      sub.unsubscribe()

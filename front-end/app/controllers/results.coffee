@@ -16,19 +16,23 @@ class Results extends Controller
 
     Subject.on 'select', @onSubjectSelect
     socket.on 'old-classifications', @onOldClassifications
+    socket.on 'loaded-all-classifications', @onLoadedAll
     socket.on 'new-classification', @onNewClassification
 
-  activate: ->
+  activate: =>
     super
     @player = new Player() if @player is null
     socket.emit 'subscribe', id: Subject.first().id
 
   onSubjectSelect: (e, subject) =>
 
-  onOldClassifications: (data) ->
-    # TODO: Draw the initial classifications
+  onLoadedAll: (data) =>
+    @player.startDrawingTraces()
 
-  onNewClassification: (data) ->
+  onOldClassifications: (data) =>
+    @player.loadTraces data
+
+  onNewClassification: (data) =>
     # TODO: Add a classificaiton drawing, update the average
 
   deactivate: ->
