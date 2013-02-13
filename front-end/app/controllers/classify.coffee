@@ -31,8 +31,8 @@ class Classify extends Controller
     @classification = new Classification {subject}
 
   onClickSubmit: (e) ->
-    console.log "sending: ", @tracer.traces
     @classification.marks = @tracer.traces
+    console.log "sending: ", @classification
     @classification.send()
 
   onClickNext: (e) ->
