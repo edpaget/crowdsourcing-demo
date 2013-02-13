@@ -119,6 +119,14 @@ class Player
     
     @update = true
 
+  empty: =>
+    console.log 'empty'
+    @traces = []
+    @clusters = []
+    @drawingCanvas.graphics.clear()
+    @averageCanvas.graphics.clear()
+    @update = true
+
   tick: () =>
     # this set makes it so the stage only re-renders when an event handler indicates a change has happened.
     if (@update)

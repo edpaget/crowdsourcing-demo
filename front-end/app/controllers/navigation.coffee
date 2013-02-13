@@ -8,11 +8,10 @@ class Classify extends Controller
 
   events:
     'change select[name="subject"]': 'onChooseSubject'
-    'change select[name="playback"]': 'onChoosePlayback'
+    'click button' : 'onClear'
 
   elements:
     'select[name="subject"]': 'subjectsMenu'
-    'select[name="playback"]': 'playbackMenu'
 
   constructor: ->
     super
@@ -20,8 +19,6 @@ class Classify extends Controller
     @html template
 
     @refreshMenu()
-
-    @populatePlayback()
 
     Subject.on 'select', @onSubjectSelect
 
@@ -33,21 +30,12 @@ class Classify extends Controller
     for subject in Subject.instances
       @subjectsMenu.append "<option value='#{subject.id}'>#{subject.id}</option>"
 
-  populatePlayback: ->
-    @playbackMenu.empty()
-
-    @playbackMenu.append "<option value='0'>Real time</option>"
-    @playbackMenu.append "<option value='5'>5 past</option>"
-    @playbackMenu.append "<option value='10'>10 past</option>"
-    @playbackMenu.append "<option value='100'>100 past</option>"
-
   onChooseSubject: ->
     subject = Subject.find @subjectsMenu.val()
     subject.select()
 
-  onChoosePlayback: ->
-    playbackType = @playbackMenu.val()
-    console.log playbackType
+  onClear: ->
+    Subject.trigger 'clear'
 
   onSubjectSelect: (e, subject) =>
     @subjectsMenu.val subject.id

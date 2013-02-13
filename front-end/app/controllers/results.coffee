@@ -15,6 +15,7 @@ class Results extends Controller
     @html template
 
     Subject.on 'select', @onSubjectSelect
+    Subject.on 'clear', @onClear
     socket.on 'classification', @onNewClassification
     socket.on 'update', @updateClassifications
     socket.on 'loaded-old-classifications', @onLoadedAll
@@ -38,6 +39,10 @@ class Results extends Controller
       @player.updateTraces()
     else
       @player.startDrawingTraces()
+
+  onClear: =>
+    console.log 'here'
+    @player.empty()
 
   deactivate: ->
     super
