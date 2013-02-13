@@ -61,8 +61,8 @@ class Player
     @isDrawing = true
 
   drawTrace: () =>
-    unless _.isUndefined @traces[@currentTrace]
-      trace = @traces[@currentTrace]
+    trace = @traces[@currentTrace]
+    unless _.isUndefined trace
       point = trace[@currentPoint]
       prevpoint = trace[@currentPoint-1]
 
@@ -124,14 +124,16 @@ class Player
     if (@update)
       @update = false
       @stage.update()
-    if (@isDrawing && @drawingCanvas)
+    if (@isDrawing && @drawingCanvas and (not _.isUndefined(@traces[@currentTrace])))
       @drawTrace()
       @currentPoint++
       if (@currentPoint >= @traces[@currentTrace].length)
         @currentPoint = 1
         @currentTrace++
+        @currentTrace++ if @traces[@currentTrace].length is 1
         if @currentTrace >= @traces.length
           @isDrawing = false
+          console.log @isDrawing
           @drawAverages()
 
 module.exports = Player

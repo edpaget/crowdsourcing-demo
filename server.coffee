@@ -22,9 +22,8 @@ db = redisClient.create()
 pub = redisClient.create()
 sub = redisClient.create()
 
-if env is 'development-monitor'
+if env is 'development'
   monit = redisClient.create()
-  monit.monitor (err, res) -> console.log "Enter Monitoring Mode"
   monit.on('monitor', (time, args) ->
     console.log("#{time}: #{require('util').inspect(args)}"))
 
@@ -58,7 +57,6 @@ io.sockets.on 'connection', (socket) ->
       keys.push key.split("-") for key in replies
       for centerPt, index in centerPoints
         closestKey = _(keys).filter((key) ->
-          console.log parseFloat(key[1]) - 30, centerPt.x, parseFloat(key[1]) + 30
           ((parseFloat(key[1]) - 30 < centerPt.x) and (parseFloat(key[1]) + 30 > centerPt.x) and
            (parseFloat(key[2])- 30 < centerPt.y) and (parseFloat(key[2]) + 30 > centerPt.y)))
         multi = db.multi()
@@ -75,7 +73,6 @@ io.sockets.on 'connection', (socket) ->
           console.error err, replies if err
 
         pub.publish "classification-#{data.id}", JSON.stringify(marks)
-        console.log "classification-#{data.id}"
 
 
   socket.on 'subscribe', (data) ->
@@ -93,12 +90,10 @@ io.sockets.on 'connection', (socket) ->
             socket.emit 'classification', fixBadJSON(classifics)
 
     sub.on 'message', (channel, data) ->
-      console.log 'here'
       socket.emit 'classification', [JSON.parse(data)]
       socket.emit 'update', 'done'
 
     sub.subscribe "classification-#{data.id}"
-    console.log "classification-#{data.id}"
 
     socket.on 'unsubscribe', (data) ->
       sub.unsubscribe()
