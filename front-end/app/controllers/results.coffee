@@ -29,6 +29,7 @@ class Results extends Controller
     @player.startDrawingTraces()
 
   onNewClassification: (data) =>
+    console.log 'here'
     @player.loadTraces data
 
   deactivate: ->

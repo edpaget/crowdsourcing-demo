@@ -1,4 +1,5 @@
 _ = require 'underscore'
+bestFit = require '../lib/best_fit'
 
 class Player
 
@@ -71,26 +72,17 @@ class Player
       @update = true
 
   drawAverages: () =>
-    for average in @averages
-      @drawingCanvas.graphics #.clear()
+    for key, cluster of @clusters
+      lastPoint = cluster[0][cluster[0].length - 1]
+      flatCluster = _.flatten(cluster)
+      flatCluster.push lastPoint
+      curve = bestFit(flatCluster, .25)
+
+      @drawingCanvas.graphics
         .setStrokeStyle(@STROKEWIDTH, 'round', 'round')
         .beginStroke(@averageColor)
-        .moveTo(average[0].x, average[0].y)
-        .curveTo(
-          average[1].x
-          average[1].y
-          average[2].x
-          average[2].y
-        )
-        .curveTo(
-          average[3].x
-          average[3].y
-          average[0].x
-          average[0].y
-        )
-
-    @update = true
-    
+        .moveTo(curve[0].x, curve[1].y)
+        .bezierCurveTo(curve[1].x, curve[1].y, curve[2].x, curve[2].y, curve[3].x, curve[3].y)
 
   loadImage: (url) =>
     console.log "loading: ", url
@@ -102,14 +94,14 @@ class Player
     @update = true
 
   loadTraces: (data) =>
-    @traces.push data.marks
-    clusterKey = data.center.join('-')
-    if _.isArray @clusters[data.center.join('-')]
-      @clusters[clusterKey].push data.marks
-    else
-      @clusters[clusterKey] = new Array
-      @clusters[clusterKey].push data.marks
-
+    for datum in data
+      @traces.push datum.marks
+      clusterKey = datum.center.join('-')
+      if _.isArray @clusters[datum.center.join('-')]
+        @clusters[clusterKey].push datum.marks
+      else
+        @clusters[clusterKey] = new Array
+        @clusters[clusterKey].push datum.marks
 
   handleImageLoad: () =>
     console.log " imw:" + @img.width + " imgh:" + @img.height

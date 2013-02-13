@@ -35,10 +35,10 @@ chordLengthParameterize = (points, first, last) ->
   params[0] = 0.0
 
   for i in [(first + 1)..last]
-    params[i-first] = params[i-first-1] + vectorLength(subtractPoints points[i-1] - points[i])
+    params[i-first] = params[i-first-1] + vectorLength(subtractPoints points[i-1], points[i])
 
   for i in [(first + 1)..last]
-    params[i-first] = params[i-first] / u[last-first]
+    params[i-first] = params[i-first] / params[last-first]
 
   params
 
@@ -90,7 +90,7 @@ computeLeftTangent = (points, end) ->
   normalizeVector vector
 
 computeRightTangent = (points, end) ->
-  vector = subtractPOints(points[end-1], points[end])
+  vector = subtractPoints(points[end-1], points[end])
   normalizeVector vector
 
 computeCenterTangent = (points, center) ->
@@ -133,7 +133,7 @@ genBezier = (points, first, last, uPrime, tHat1, tHat2) ->
   matrixCs = [[0.0,0.0],[0.0,0.0]]
   matrixXs = [0.0, 0.0]
 
-  for i in [0..points.length]
+  for i in [0..(points.length)]
     vec1 = multiplyVector(tHat1, uPrime[i])
     vec2 = multiplyVector(tHat2, uPrime[i])
     vectorAs[0][i] = vec1
@@ -167,46 +167,46 @@ genBezier = (points, first, last, uPrime, tHat1, tHat2) ->
     curve = new Array
     if alpha_l < epsilon or alpha_r < epsilon
       dist = segLength / 3.0
-      curve[0] = d[first]
-      curve[3] = d[last]
-      curve[1] = addVector(multiplyVector(that1, dist), d[first])
-      curve[2] = addVector(mulitplyVector(that2, dist), d[last])
+      curve[0] = points[first]
+      curve[3] = points[last]
+      curve[1] = addVector(multiplyVector(tHat1, dist), points[first])
+      curve[2] = addVector(multiplyVector(tHat2, dist), points[last])
     else
-      curve[0] = d[first]
-      curve[3] = d[last]
-      curve[1] = addVector(multiplyVector(that1, alpha_l), d[first])
-      curve[2] = addVector(mulitplyVector(that2, alpha_r), d[last])
+      curve[0] = points[first]
+      curve[3] = points[last]
+      curve[1] = addVector(multiplyVector(tHat1, alpha_l), points[first])
+      curve[2] = addVector(multiplyVector(tHat2, alpha_r), points[last])
     return curve
 
 fitCubic = (points, first, last, tHat1, tHat2, error) ->
   maxIterations = 4
   iterationError = error * error
-  nPoints = points.lengths
+  nPts = points.lengths
 
   if nPts is 2
-    distance = distancePoints(d[first], d[last]) / 3
+    distance = distancePoints(points[first], points[last]) / 3
 
     curve = new Array
-    curve[0] = d[first]
-    curve[3] = d[last]
-    curve[1] = addVector(multiplyVector(that1, distance), d[first])
-    curve[2] = addVector(mulitplyVector(that2, distance), d[last])
+    curve[0] = points[first]
+    curve[3] = points[last]
+    curve[1] = addVector(multiplyVector(that1, distance), points[first])
+    curve[2] = addVector(mulitplyVector(that2, distance), points[last])
 
     return curve
 
-  uPrime = chordLengthParameterized(points, first, last)
-  curve = generateBezier(points, first, last, uPrime, tHat1, tHat1)
-  [maxError, splitPoint] = computeMaxError(d, first, last, curve, u)
+  uPrime = chordLengthParameterize(points, first, last)
+  curve = genBezier(points, first, last, uPrime, tHat1, tHat1)
+  [maxError, splitPoint] = computeMaxError(points, first, last, curve, uPrime)
   if maxError < error
     return curve
   else if maxError < iterationError
       uPrime = reparamterized(points, first, last, uPrime, curve)
-      curve = generateBezier(points, first, last, uPrime, tHat1, tHat2)
+      curve = genBezier(points, first, last, uPrime, tHat1, tHat2)
       [maxError, splitPoint] = computeMaxError(points, first, last, curve, uPrime)
       if maxError < error
         return curve
   else
-    tHatCenter = computeCenterTanger(points, splitPoint)
+    tHatCenter = computeCenterTangent(points, splitPoint)
     result = fitCubic(points, splitPoint, first, negate(tHatCenter), tHat2, error)
     return fitCubic(points, first, splitPoint, tHat1, tHatCenter, error).concat(result)
 

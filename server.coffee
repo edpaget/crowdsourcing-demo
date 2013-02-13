@@ -20,8 +20,9 @@ console.log "Server listening on port: #{port}"
 
 db = redisClient.create()
 pub = redisClient.create()
+sub = redisClient.create()
 
-if env is 'development'
+if env is 'development-monitor'
   monit = redisClient.create()
   monit.monitor (err, res) -> console.log "Enter Monitoring Mode"
   monit.on('monitor', (time, args) ->
@@ -38,6 +39,13 @@ centerPoint = (points) ->
   yMean = ySum / points.length
 
   {x: xMean, y: yMean}
+
+fixBadJSON = (json) ->
+  if _.isArray json
+    for item,index in json
+      json[index] = JSON.parse(item)
+  json
+
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'classify', (data) ->
@@ -66,23 +74,29 @@ io.sockets.on 'connection', (socket) ->
           console.error err, replies if err
 
         pub.publish "classification-#{data.id}", JSON.stringify(marks)
+        console.log "classification-#{data.id}"
 
 
   socket.on 'subscribe', (data) ->
-    sub = redisClient.create()
     db.smembers data.id, (err, keys) ->
       console.error err if err
       for key in keys
-        db.lrange key, 0, 99, (err, classifics) ->
-          console.error err if err
-          console.log classifics
-          socket.emit 'classification', JSON.parse(classifics)
-      socket.emit 'loaded-old-classifications', 'done'
+        if key is _.last(keys)
+          db.lrange key, 0, 99, (err, classifics) ->
+            console.error err if err
+            socket.emit 'classification', fixBadJSON(classifics)
+            socket.emit 'loaded-old-classifications', 'done' 
+        else
+          db.lrange key, 0, 99, (err, classifics) ->
+            console.error err if err
+            socket.emit 'classification', fixBadJSON(classifics)
 
     sub.on 'messsage', (channel, data) ->
+      console.log 'here'
       socket.emit 'classification', JSON.parse(data)
 
     sub.subscribe "classification-#{data.id}"
+    console.log "classification-#{data.id}"
 
     socket.on 'unsubscribe', (data) ->
       sub.unsubscribe()
