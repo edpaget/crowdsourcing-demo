@@ -32,6 +32,7 @@ class Player
     @canvas = document.getElementById("playercanvas")
     @stage = new createjs.Stage(@canvas)
     @traces = []
+    @clusters = {}
 
     @stage.autoClear = false
     @stage.enableDOMEvents(true)
@@ -54,7 +55,7 @@ class Player
 
   drawTrace: () =>
     unless _.isUndefined @traces[@currentTrace]
-      trace = @traces[@currentTrace].marks
+      trace = @traces[@currentTrace]
       point = trace[@currentPoint]
       prevpoint = trace[@currentPoint-1]
 
@@ -101,7 +102,14 @@ class Player
     @update = true
 
   loadTraces: (data) =>
-    @traces.push data
+    @traces.push data.marks
+    clusterKey = data.center.join('-')
+    if _.isArray @clusters[data.center.join('-')]
+      @clusters[clusterKey].push data.marks
+    else
+      @clusters[clusterKey] = new Array
+      @clusters[clusterKey].push data.marks
+
 
   handleImageLoad: () =>
     console.log " imw:" + @img.width + " imgh:" + @img.height
@@ -125,7 +133,7 @@ class Player
     if (@isDrawing && @drawingCanvas)
       @drawTrace()
       @currentPoint++
-      if (@currentPoint >= @traces[@currentTrace].marks.length)
+      if (@currentPoint >= @traces[@currentTrace].length)
         @currentPoint = 1
         @currentTrace++
         if @currentTrace >= @traces.length

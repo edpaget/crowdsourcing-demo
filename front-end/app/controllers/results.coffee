@@ -15,9 +15,8 @@ class Results extends Controller
     @html template
 
     Subject.on 'select', @onSubjectSelect
-    socket.on 'old-classifications', @onOldClassifications
-    socket.on 'loaded-all-classifications', @onLoadedAll
-    socket.on 'new-classification', @onNewClassification
+    socket.on 'classification', @onNewClassification
+    socket.on 'loaded-old-classifications', @onLoadedAll
 
   activate: =>
     super
@@ -29,11 +28,8 @@ class Results extends Controller
   onLoadedAll: (data) =>
     @player.startDrawingTraces()
 
-  onOldClassifications: (data) =>
-    @player.loadTraces data
-
   onNewClassification: (data) =>
-    # TODO: Add a classificaiton drawing, update the average
+    @player.loadTraces data
 
   deactivate: ->
     super

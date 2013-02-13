@@ -76,11 +76,11 @@ io.sockets.on 'connection', (socket) ->
         db.lrange key, 0, 99, (err, classifics) ->
           console.error err if err
           console.log classifics
-          socket.emit 'old-classifications', JSON.parse(classifics)
-      socket.emit 'loaded-all-classifications', 'done'
+          socket.emit 'classification', JSON.parse(classifics)
+      socket.emit 'loaded-old-classifications', 'done'
 
     sub.on 'messsage', (channel, data) ->
-      socket.emit 'new-classification', JSON.parse(data)
+      socket.emit 'classification', JSON.parse(data)
 
     sub.subscribe "classification-#{data.id}"
 
