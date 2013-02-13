@@ -35,6 +35,7 @@ class Player
     @stage = new createjs.Stage(@canvas)
     @traces = []
     @clusters = {}
+    @started = false
 
     @stage.autoClear = false
     @stage.enableDOMEvents(true)
@@ -54,6 +55,7 @@ class Player
     @currentPoint = 1
     @isDrawing = true
     @lastDraw = 0
+    @started = true
 
   updateTraces: =>
     @isDrawing = true
@@ -78,7 +80,6 @@ class Player
   drawAverages: () =>
     @averageCanvas.graphics.clear()
     for key, cluster of @clusters
-    	console.log cluster
     	drawAverageCircle cluster, @averageCanvas
     @update = true
 

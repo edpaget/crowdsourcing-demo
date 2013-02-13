@@ -30,12 +30,14 @@ class Results extends Controller
     @player.startDrawingTraces()
 
   onNewClassification: (data) =>
+    console.log 'class'
     @player.loadTraces data
 
   updateClassifications: (data) =>
-    console.log data
-    console.log @player.isDrawing
-    @player.updateTraces()
+    if @player.started
+      @player.updateTraces()
+    else
+      @player.startDrawingTraces()
 
   deactivate: ->
     super
