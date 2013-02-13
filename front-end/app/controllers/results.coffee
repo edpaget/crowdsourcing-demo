@@ -16,6 +16,7 @@ class Results extends Controller
 
     Subject.on 'select', @onSubjectSelect
     socket.on 'classification', @onNewClassification
+    socket.on 'update', @updateClassifications
     socket.on 'loaded-old-classifications', @onLoadedAll
 
   activate: =>
@@ -29,8 +30,12 @@ class Results extends Controller
     @player.startDrawingTraces()
 
   onNewClassification: (data) =>
-    console.log 'here'
     @player.loadTraces data
+
+  updateClassifications: (data) =>
+    console.log data
+    console.log @player.isDrawing
+    @player.updateTraces()
 
   deactivate: ->
     super

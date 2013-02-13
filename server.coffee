@@ -91,9 +91,10 @@ io.sockets.on 'connection', (socket) ->
             console.error err if err
             socket.emit 'classification', fixBadJSON(classifics)
 
-    sub.on 'messsage', (channel, data) ->
+    sub.on 'message', (channel, data) ->
       console.log 'here'
-      socket.emit 'classification', JSON.parse(data)
+      socket.emit 'classification', [JSON.parse(data)]
+      socket.emit 'update', 'done'
 
     sub.subscribe "classification-#{data.id}"
     console.log "classification-#{data.id}"

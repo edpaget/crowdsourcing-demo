@@ -54,6 +54,9 @@ class Player
     @isDrawing = true
     @lastDraw = 0
 
+  updateTraces: =>
+    @isDrawing = true
+
   drawTrace: () =>
     unless _.isUndefined @traces[@currentTrace]
       trace = @traces[@currentTrace]
