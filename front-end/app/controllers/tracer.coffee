@@ -52,7 +52,15 @@ class Tracer
 		@stage.addEventListener("stagemousedown", @handleMouseDown)
 		@stage.addEventListener("stagemouseup", @handleMouseUp)
 
-	sendTraces: ()=>
+	cleanTraces: () =>
+		console.log "cleanTraces"
+		@traces = []
+		@currentTrace = []
+		@currentTime = 0
+		@drawingCanvas.graphics.clear()
+		@update = true
+
+	sendTraces: () =>
 		console.log "send: ", JSON.stringify(@traces)
 		return false
 
@@ -72,7 +80,7 @@ class Tracer
 	handleMouseMove: (event) =>
 		# console.log "move"
 
-		@drawingCanvas.graphics #.clear()
+		@drawingCanvas.graphics
 			.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
 			.beginStroke(@currentColor)
 			.moveTo(@oldPt.x, @oldPt.y)

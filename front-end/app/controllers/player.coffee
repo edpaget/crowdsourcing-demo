@@ -9,6 +9,7 @@ class Player
   backgroundImage: null
   update: true
   drawingCanvas: null
+  averageCanvas: null
   oldPt: null
   oldMidPt: null
 
@@ -75,9 +76,11 @@ class Player
       @update = true
 
   drawAverages: () =>
+    @averageCanvas.graphics.clear()
     for key, cluster of @clusters
     	console.log cluster
-    	drawAverageCircle cluster, @drawingCanvas
+    	drawAverageCircle cluster, @averageCanvas
+    @update = true
 
   loadImage: (url) =>
     console.log "loading: ", url
@@ -109,6 +112,9 @@ class Player
     
     @drawingCanvas = new createjs.Shape()
     @stage.addChild(@drawingCanvas)
+    
+    @averageCanvas = new createjs.Shape()
+    @stage.addChild(@averageCanvas)
     
     @update = true
 

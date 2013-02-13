@@ -33,6 +33,7 @@ class Classify extends Controller
   onClickSubmit: (e) ->
     @classification.marks = @tracer.traces
     console.log "sending: ", @classification
+    @tracer.cleanTraces()
     @classification.send()
 
   onClickNext: (e) ->
