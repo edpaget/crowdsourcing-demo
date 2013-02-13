@@ -19,7 +19,7 @@ server.listen port
 console.log "Server listening on port: #{port}"
 
 db = redisClient.create()
-pubsub = redisClient.create()
+pub = redisClient.create()
 
 if env is 'development'
   monit = redisClient.create()
@@ -55,29 +55,34 @@ io.sockets.on 'connection', (socket) ->
         multi = db.multi()
         if _.isEmpty closestKey
           marks = {center: [centerPt.x, centerPt.y], marks: data.marks[index]}
-          multi.lpush "#{data.id}-#{centerPt.x}-#{centerPt.y}", marks
+          multi.lpush "#{data.id}-#{centerPt.x}-#{centerPt.y}", JSON.stringify(marks)
           multi.sadd data.id, "#{data.id}-#{centerPt.x}-#{centerPt.y}"
         else
           marks = {center: [closestKey[0][1], closestKey[0][2]], marks: data.marks[index]}
-          multi.lpush "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", marks
+          multi.lpush "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", JSON.stringify(marks)
           multi.ltrim "#{data.id}-#{closestKey[0][1]}-#{closestKey[0][2]}", 0, 99
 
         multi.exec (err, replies) ->
           console.error err, replies if err
 
-        pubsub.publish "classification-#{data.id}", marks
+        pub.publish "classification-#{data.id}", JSON.stringify(marks)
 
 
   socket.on 'subscribe', (data) ->
+    sub = redisClient.create()
     db.smembers data.id, (err, keys) ->
       console.error err if err
-      db.mget keys, (err, classifics) ->
-        socket.emit 'old-classifications', classifics
+      for key in keys
+        db.lrange key, 0, 99, (err, classifics) ->
+          console.error err if err
+          console.log classifics
+          socket.emit 'old-classifications', JSON.parse(classifics)
+      socket.emit 'loaded-all-classifications', 'done'
 
-    pubsub.on 'messsage', (channel, data) ->
-      socket.emit 'new-classification', data
+    sub.on 'messsage', (channel, data) ->
+      socket.emit 'new-classification', JSON.parse(data)
 
-    pubsub.subscribe "classification-#{data.id}"
+    sub.subscribe "classification-#{data.id}"
 
     socket.on 'unsubscribe', (data) ->
-      pubsub.unsubscribe()
+      sub.unsubscribe()
