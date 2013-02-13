@@ -86,7 +86,7 @@ io.sockets.on 'connection', (socket) ->
           db.lrange key, 0, 99, (err, classifics) ->
             console.error err if err
             socket.emit 'classification', fixBadJSON(classifics)
-            socket.emit 'loaded-old-classifications', 'done' 
+            socket.emit 'loaded-old-classifications', 'done' unless _.isEmpty(keys)
         else
           db.lrange key, 0, 99, (err, classifics) ->
             console.error err if err
