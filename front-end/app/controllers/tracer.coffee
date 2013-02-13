@@ -47,23 +47,18 @@ class Tracer
 		)
 
 	addInteraction: () =>
-		# $("#submitButton").on("click", @sendTraces)
 		createjs.Ticker.addListener(@)
 		@stage.addEventListener("stagemousedown", @handleMouseDown)
 		@stage.addEventListener("stagemouseup", @handleMouseUp)
 
 	cleanTraces: () =>
-		# console.log "cleanTraces"
+		console.log "cleanTraces"
 		@traces = []
 		@drawingCanvas.graphics.clear()
 		@update = true
 
-	sendTraces: () =>
-		console.log "send: ", JSON.stringify(@traces)
-		return false
-
 	handleMouseDown: (event) =>
-		# console.log "down"
+		console.log "down", @drawingCanvas
 		# create the new trace
 		@currentTrace = []
 
@@ -73,15 +68,24 @@ class Tracer
 		@currentTime = createjs.Ticker.getTime()
 		@addCurrentPointToTrace()
 
-		@stage.addEventListener("stagemousemove" , @handleMouseMove)
-
-	handleMouseMove: (event) =>
-		# console.log "move"
-
 		@drawingCanvas.graphics
 			.setStrokeStyle(@STROKEWIDTH, 'round', 'round')
 			.beginStroke(@currentColor)
 			.moveTo(@oldPt.x, @oldPt.y)
+			# .lineTo(
+			# 	@stage.mouseX
+			# 	@stage.mouseY
+			# )
+
+		@stage.addEventListener("stagemousemove" , @handleMouseMove)
+
+	handleMouseMove: (event) =>
+		console.log "move"
+
+		@drawingCanvas.graphics
+			# .setStrokeStyle(@STROKEWIDTH, 'round', 'round')
+			# .beginStroke(@currentColor)
+			# .moveTo(@oldPt.x, @oldPt.y)
 			.lineTo(
 				@stage.mouseX
 				@stage.mouseY
@@ -95,10 +99,10 @@ class Tracer
 		@update = true
 
 	handleMouseUp: (event) =>
-		# console.log "up"
+		console.log "up"
 		@traces.push(@currentTrace) if (@currentTrace.length > 0)
 		@currentTrace = []
-		@stage.removeEventListener("stagemousemove" , @handleMouseMove);
+		@stage.removeEventListener("stagemousemove" , @handleMouseMove)
 
 	loadImage: (url) =>
 		console.log "loading: ", url

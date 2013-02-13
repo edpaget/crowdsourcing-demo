@@ -35,6 +35,7 @@ class Classify extends Controller
     console.log "sending: ", @classification
     @tracer.cleanTraces()
     @classification.send()
+    location.reload()
 
   onClickNext: (e) ->
     Subject.next()

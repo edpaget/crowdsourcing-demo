@@ -24,10 +24,10 @@ class Player
 
   # colors could be random
   averageColor: "#ff0000"
-  traceColor: "rgba(255,255,0,.5)"
+  traceColor: "rgba(255,255,0,.4)"
   index: 0
 
-  STROKEWIDTH: 5
+  STROKEWIDTH: 3
   IMAGESCALE: 1.4
 
   constructor: () ->
