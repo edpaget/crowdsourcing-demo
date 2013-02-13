@@ -3,4 +3,4 @@ HawServer = require 'haw/lib/server'
 
 server = new HawServer root: __dirname
 
-server.serve +process.env.PORT + 100 || 8001
+server.serve +process.env.PORT || 8001

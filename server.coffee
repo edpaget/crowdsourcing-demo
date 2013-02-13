@@ -13,7 +13,7 @@ io = require('socket.io').listen server, {log: false}
 require('./lib/socket')(io)
 
 
-port = process.env.PORT || 3001
+port = process.env.SERVER_PORT || 3001
 server.listen port
 
 console.log "Server listening on port: #{port}"
