@@ -141,7 +141,7 @@ class Player
         # @currentTrace++ if @traces[@currentTrace].length is 1
         if @currentTrace >= @traces.length
           @isDrawing = false
-          console.log @isDrawing
+          # console.log @isDrawing
           @drawAverages()
 
 module.exports = Player
