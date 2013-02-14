@@ -1,6 +1,6 @@
 io = require 'socket.io-client'
 
-socket = io.connect "//#{location.hostname}:3001"
+socket = io.connect "//#{location.hostname}:#{location.port}"
 
 # socket =
 #   on: ->
