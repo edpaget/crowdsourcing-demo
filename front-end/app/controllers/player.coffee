@@ -138,7 +138,7 @@ class Player
       if (@currentPoint >= @traces[@currentTrace].length)
         @currentPoint = 1
         @currentTrace++
-        @currentTrace++ if @traces[@currentTrace].length is 1
+        # @currentTrace++ if @traces[@currentTrace].length is 1
         if @currentTrace >= @traces.length
           @isDrawing = false
           console.log @isDrawing
