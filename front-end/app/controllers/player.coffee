@@ -88,8 +88,6 @@ class Player
     @img = new Image()
     @img.onload = @handleImageLoad
     @img.src = url
-    # background = new createjs.Bitmap(url)
-    # @stage.addChild(background)
     @update = true
 
   loadTraces: (data) =>
@@ -104,8 +102,6 @@ class Player
 
   handleImageLoad: () =>
     console.log " imw:" + @img.width + " imgh:" + @img.height
-    # hacky image display (XSS issues)
-    # $("#moonimage").css("display","block")
     @backgroundImage = new createjs.Bitmap(@img)
     @backgroundImage.scaleX = @backgroundImage.scaleY = @IMAGESCALE
     
