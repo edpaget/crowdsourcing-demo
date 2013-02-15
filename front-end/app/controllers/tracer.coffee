@@ -80,7 +80,7 @@ class Tracer
 		@stage.addEventListener("stagemousemove" , @handleMouseMove)
 
 	handleMouseMove: (event) =>
-		console.log "move"
+		# console.log "move"
 
 		@drawingCanvas.graphics
 			# .setStrokeStyle(@STROKEWIDTH, 'round', 'round')
