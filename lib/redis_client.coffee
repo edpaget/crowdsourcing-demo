@@ -9,7 +9,8 @@ module.exports =
     else
       rtg = require('url').parse process.env.REDISTOGO_URL
       client = redis.createClient rtg.port, rtg.hostname
-      client.auth rtg.auth.split(':')[1], (err) ->
+      # NOTE: IMPORTANT! in nodejitsu the password has a : symbol
+      client.auth "#{rtg.auth.split(':')[1]}:#{rtg.auth.split(':')[2]}", (err) ->
         if err
           console.error err
           throw err
