@@ -5,7 +5,6 @@ module.exports = (io) ->
   io.configure ->
     io.set 'origins', '*:*'
     io.set 'transports', ['websocket', 'xhr-polling', 'jsonp-polling']
-    io.set 'polling duration', 10
     io.set 'store', new RedisStore
       redis: require 'redis'
       redisPub: redisCli.create()
