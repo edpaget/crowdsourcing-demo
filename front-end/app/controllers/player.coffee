@@ -122,6 +122,7 @@ class Player
     @drawingCanvas.graphics.clear()
     @averageCanvas.graphics.clear()
     @update = true
+    # TODO: this should also clear the RedisDB
 
   tick: () =>
     # this set makes it so the stage only re-renders when an event handler indicates a change has happened.

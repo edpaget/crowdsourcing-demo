@@ -2,7 +2,7 @@ Player = require './player'
 {Controller} = require 'spine'
 template = require '../views/results'
 socket = require '../lib/socket'
-Subject = require '../models/subject'
+# Subject = require '../models/subject'
 
 class Results extends Controller
   className: 'results'
@@ -14,8 +14,8 @@ class Results extends Controller
 
     @html template
 
-    Subject.on 'select', @onSubjectSelect
-    Subject.on 'clear', @onClear
+    # Subject.on 'select', @onSubjectSelect
+    # Subject.on 'clear', @onClear
     socket.on 'classification', @onNewClassification
     socket.on 'update', @updateClassifications
     socket.on 'loaded-old-classifications', @onLoadedAll
@@ -25,7 +25,7 @@ class Results extends Controller
     @player = new Player() if @player is null
     socket.emit 'subscribe', id: Subject.first().id
 
-  onSubjectSelect: (e, subject) =>
+  # onSubjectSelect: (e, subject) =>
 
   onLoadedAll: (data) =>
     @player.startDrawingTraces()
@@ -40,9 +40,9 @@ class Results extends Controller
     else
       @player.startDrawingTraces()
 
-  onClear: =>
-    console.log 'here'
-    @player.empty()
+  # onClear: =>
+  #   console.log 'here'
+  #   @player.empty()
 
   deactivate: ->
     super

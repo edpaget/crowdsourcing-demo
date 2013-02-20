@@ -1,4 +1,4 @@
-<a href="#/classify" class="classify"><i class="icon-hand-up" title="Classify"></i></a>
-<a href="#/results" class="results"><i class="icon-group" title="Group results"></i></a>
-<select name="subject"></select><br />
-<button type="button">Clear</button>
+<a href="#/classify" class="classify">draw</a>
+<a href="#/results" class="results">view</a>
+<!-- <select name="subject"></select> -->
+<button type="button">clear</button>

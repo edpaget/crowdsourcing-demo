@@ -3,6 +3,5 @@
 </div>
 
 <div class="action">
-  <button name="classify"><i class="icon-ok-circle" title="Classify"></i></button>
-  <button name="next"><i class="icon-arrow-right" title="Next"></i></button>
+  <button name="classify">submit</button>
 </div>

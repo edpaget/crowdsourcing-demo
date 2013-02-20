@@ -21,16 +21,19 @@ class Classify extends Controller
 
     @html template
 
-    Subject.on 'select', @onSubjectSelect
+    # Subject.on 'select', @onSubjectSelect
 
   activate: ->
     super
     @tracer = new Tracer()
   
-  onSubjectSelect: (e, subject) =>
-    @classification = new Classification {subject}
+  # onSubjectSelect: (e, subject) =>
+  #   @classification = new Classification {subject}
 
   onClickSubmit: (e) ->
+    subject = Subject.find 'S_0'
+    @classification = new Classification { subject }
+    console.log @classification
     @classification.marks = @tracer.traces
     console.log "sending: ", @classification
     @tracer.cleanTraces()
