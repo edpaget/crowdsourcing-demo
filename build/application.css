@@ -3,11 +3,12 @@ html{background:#000;color:#fff;font:14px "Helvetica Neue",sans-serif;text-align
 .stack>.active{display:block}
 button{background:transparent;border:0;color:inherit;cursor:pointer;font:inherit;padding:0}
 a{color:inherit}
-nav{font-size:50px;position:absolute;right:15px;top:15px;z-index:1}
-nav a{display:block;margin:20px 0;text-decoration:none}
-nav a.results{font-size:24px}
-.classify,.results{font-size:50px;margin-top:40px;text-align:center}
-.classify .action,.results .action{bottom:15px;position:absolute;right:15px}
+nav{font-size:20px;position:fixed;bottom:0;left:0;width:100%;height:30px;z-index:1;background-color:#000;text-align:center}
+nav a,nav select,nav button{margin:0 20px}
+nav a{text-decoration:none}
+nav a.results{font-size:normal}
+.classify,.results{text-align:center}
+.classify .action,.results .action{bottom:30px;position:absolute;left:0;font-size:20px;width:100%}
 .classify .action button,.results .action button{display:block;margin:20px 0;width:100%}
 .classify .action button[name=next],.results .action button[name=next]{font-size:24px}
 #tracer{position:relative}
